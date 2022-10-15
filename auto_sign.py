@@ -37,6 +37,7 @@ def daka():
 
     print("正在启动浏览器")
     driver = webdriver.Firefox()
+    driver.set_window_position(x=-10000, y=-10000)
     print("浏览器已启动正在打开网页，目标app.bupt.edu.cn")
     driver.get("https://app.bupt.edu.cn/ncov/wap/default/index")
 
@@ -85,7 +86,7 @@ while True:
     if now_time in time_interval:
         print("开始打卡")
         daka()
-        time.sleep(40)
+        time.sleep(120)
     else:
         print("等待")
         time.sleep(40)
