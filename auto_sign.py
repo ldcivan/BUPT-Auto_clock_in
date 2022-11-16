@@ -3,18 +3,26 @@ from pyvirtualdisplay import Display
 import time
 import sys
 from interval import Interval
+import requests
 
+headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:99.0) Gecko/20100101 Firefox/99.0",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+    "Accept-Language": "zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Connection": "keep-alive"
+}
 
 def write(data):
-    File = open('log.txt', mode='a',encoding="utf-8")
+    File = open('log.txt', mode='a', encoding="utf-8")
     File.write(data + '\n')
     File.close()
 
-
-def daka(user, pw, hidden):
+def daka(user, pw, mailto, hidden):
     global window
     print(user)
     print(pw)
+    print(mailto)
     print(hidden)
     if hidden == 1:
         write("使用后台模式")
@@ -46,7 +54,7 @@ def daka(user, pw, hidden):
         print("无法自动登录，正在尝试使用学号及密码登录")
         try:
             time.sleep(3)
-            driver.execute_script("var username =" + user + ";var password =" + pw + ";localStorage.loginTypeUsername = 'password';if (username && password) {parent.doLogin( username, password, 'username_password');}")
+            driver.execute_script("var username ='" + user + "';var password ='" + pw + "';localStorage.loginTypeUsername = 'password';if (username && password) {parent.doLogin( username, password, 'username_password');}")
         except:
             write("在登陆页面出错，可能是账号密码错误")
             print("在登陆页面出错，可能是账号密码错误")
@@ -80,7 +88,21 @@ def daka(user, pw, hidden):
     write("浏览器已关闭")
     print("浏览器已关闭")
 
+    if mailto != 0:
+        with open('./log.txt', encoding='utf-8') as file:
+            content = file.read()
+        content = content.split("#")[-1]
+        data = {'mailto': mailto, 'subject': '防疫打卡报告', 'body': content}
+        #  data = dict(mailto=mailto, subject='防疫打卡报告', body=content)
+        r = requests.post("http://pro-ivan.com/comment/email_pub.php", data=data, headers=headers)
+        print(r.text)
 
+
+with open("./geckodriver.log", 'w') as file:
+    file.truncate(0)
+with open("./log.txt", 'w') as file:
+    file.truncate(0)
+print("log初始化成功")
 write("读取config")
 print("正在读取config.txt")
 with open('./config.txt', 'r') as file:
@@ -100,7 +122,10 @@ user = d['username']
 user = user.split(",")
 pw = d['pw']
 pw = pw.split(",")
+mailto = d['mailto']
+mailto = mailto.split(",")
 hidden = d['hidden']
+email = d['email']
 
 while True:
     # 当前时间
@@ -108,15 +133,29 @@ while True:
     # 当前时间（以时间区间的方式表示）
     now_time = Interval(now_localtime, now_localtime)
 
-    time_interval = Interval("00:02:00", "00:03:00")
+    time_interval = Interval("00:00:00", "23:02:00")
 
     if now_time in time_interval:
         with open("./log.txt", 'w') as file:
             file.truncate(0)
-        write(str(now_time) + "开始打卡")
-        print("开始打卡")
+        write("#" + str(now_time) + "开始打卡")
+        print("#开始打卡")
+
+        def indexing(lst, index):
+            if lst[index:] == []:
+                print("IndexError: list index out of range")
+
         for i in range(len(user)):
-            daka(user[i], pw[i], hidden)
+            try:
+                indexing(pw, i)
+                indexing(mailto, i)
+                if email == 1:
+                    daka(user[i], pw[i], mailto[i], hidden)
+                if email == 0:
+                    daka(user[i], pw[i], 0, hidden)
+            except:
+                print("出现错误，可能是因为密码/邮箱数组越界")
+                write("出现错误，可能是因为密码/邮箱数组越界")
         time.sleep(120)
     else:
         write(str(now_time) + "  等待")
