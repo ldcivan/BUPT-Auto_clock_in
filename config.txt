@@ -1,3 +1,5 @@
-username:"'2020212566','2020212566'"
-pw:"'03215717','03215717'"
+username:"XXXXXXXXXX"
+pw:"XXXXXXXX"
+mailto:"XXXX@XX.com"
 hidden:1
+email:1
