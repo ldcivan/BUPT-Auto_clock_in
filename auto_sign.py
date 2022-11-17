@@ -133,7 +133,7 @@ while True:
     # 当前时间（以时间区间的方式表示）
     now_time = Interval(now_localtime, now_localtime)
 
-    time_interval = Interval("00:00:00", "23:02:00")
+    time_interval = Interval("00:02:00", "00:03:00")
 
     if now_time in time_interval:
         with open("./log.txt", 'w') as file:
