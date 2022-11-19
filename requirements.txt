@@ -1,5 +1,4 @@
 interval==1.0.0
 PyVirtualDisplay==3.0
-pywin32==300
 requests==2.25.1
 selenium==4.6.0
