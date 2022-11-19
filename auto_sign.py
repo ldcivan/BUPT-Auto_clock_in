@@ -136,6 +136,7 @@ print("正在读取config.txt")
 
 if not os.path.isfile("./config.txt"):  #  config初始设置GUI
     #  print("初次使用吗？是的话请告诉我们您的BUPT账号和密码吧！")
+    root0 = tk.Tk()
     first_time = msgbox.askyesno("欢迎使用", "欢迎使用由YujioNako编写的BUPT自动打卡程序！您似乎是第一次使用本程序，需要钰中帮您配置账密吗？或者您也可以选“否”，然后根据我们提供的config_default.txt自行配置后将文件名改为config.txt")
     if first_time == 0:
         default_config()
@@ -143,6 +144,7 @@ if not os.path.isfile("./config.txt"):  #  config初始设置GUI
     #  user = input("账号：")
     #  pw = input("密码：")
     root = tk.Tk()
+    root.title("请输入您的学号与密码")
     root.geometry('300x240')
 
     def input2config():
@@ -154,6 +156,7 @@ if not os.path.isfile("./config.txt"):  #  config初始设置GUI
         msgbox.showinfo("config已设置", "基本设置录入成功！更多设置请自行查看config.txt")
         print("基本设置录入成功！更多设置请自行查看config.txt")
         root.destroy()
+        root0.destroy()
 
     b3 = tk.Label(root, text="学号：")
     b3.pack()
@@ -188,6 +191,7 @@ try:
     hidden = d['hidden']
     email = d['email']
     print("完成config的读取")
+    write("完成config的读取")
 except:
     msgbox.showerror("config异常", "可能是config.txt内格式错误，请从目录内找到config_default.txt进行参考")
     #  win32api.MessageBox(0, "可能是config.txt内格式错误，请从目录内找到config_default.txt进行参考", "config异常", win32con.MB_ICONWARNING)
