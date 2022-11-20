@@ -19,7 +19,7 @@ headers = {
 def default_config():
     new_config = open("./config_default.txt", 'w', encoding="utf-8")
     new_config.write(
-        'username:"XXXXXXXX,XXXXXXXX"\npw:"12345678,12345678"\nmailto:"XXXXXXXXX@qq.com"\nhidden:1\nemail:1')
+        'username:"XXXXXXXX,XXXXXXXX"\npw:"12345678,12345678"\nmailto:"XXXXXXXXX@qq.com"\nhidden:1\nemail:1\nfirefox_path:""')
     new_config.close()
 
 def write(data):
@@ -27,7 +27,7 @@ def write(data):
     File.write(data + '\n')
     File.close()
 
-def daka(user, pw, mailto, hidden):
+def daka(user, pw, mailto, hidden, executable_path):
     global window
     print(user)
     print(pw)
@@ -50,7 +50,10 @@ def daka(user, pw, mailto, hidden):
 
     write("正在启动浏览器")
     print("正在启动浏览器")
-    driver = webdriver.Firefox()
+    try:
+        driver = webdriver.Firefox(executable_path=executable_path)
+    except:
+        msgbox.showerror("浏览器驱动错误", "可能是geckodriver.exe未添加到PATH，或者程序未查找到FireFox路径\n若是后种情况，请在config.txt中将firefox.exe的完整路径填入firefox_path:")
     driver.set_window_position(x=-10000, y=-10000)
     write("浏览器已启动，正在打开目标")
     print("浏览器已启动，正在打开网页，目标app.bupt.edu.cn")
@@ -83,10 +86,12 @@ def daka(user, pw, mailto, hidden):
                 write(user + "打卡成功")
                 print(user + "打卡成功，如果是首次使用，建议人工查看是否已打卡")
             except:
+                windows = tk.Tk()
                 msgbox.showerror("打卡失败", user + "打卡失败，请手动打卡")
                 #  win32api.MessageBox(0, user + "打卡失败，请手动打卡", "打卡失败", win32con.MB_ICONWARNING)
                 write(user + "打卡失败")
                 print(user + "打卡失败，请手动打卡")
+                windows.destroy()
         else:
             msgbox.showerror("登录失败", user + "登录失败，可能是浏览器未正确跳转，请重试或在GitHub反馈")
             #  win32api.MessageBox(0, user + "登录失败，可能是浏览器未正确跳转，请重试或在GitHub反馈", "登陆失败", win32con.MB_ICONWARNING)
@@ -156,7 +161,7 @@ if not os.path.isfile("./config.txt"):  #  config初始设置GUI
         user = b0.get()
         pw = b1.get()
         new_config = open("./config.txt", 'w', encoding="utf-8")
-        new_config.write('username:"' + user + '"\npw:"' + pw + '"\nmailto:""\nhidden:1\nemail:0')
+        new_config.write('username:"' + user + '"\npw:"' + pw + '"\nmailto:""\nhidden:1\nemail:0\nfirefox_path:""')
         new_config.close()
         msgbox.showinfo("config已设置", "基本设置录入成功！更多设置请自行查看config.txt")
         print("基本设置录入成功！更多设置请自行查看config.txt")
@@ -200,6 +205,7 @@ try:
     mailto = mailto.split(",")
     hidden = d['hidden']
     email = d['email']
+    executable_path = d['firefox_path']
     print("完成config的读取")
     write("完成config的读取")
 except:
@@ -236,9 +242,9 @@ while True:
                 indexing(pw, i)
                 indexing(mailto, i)
                 if email == 1:
-                    daka(user[i], pw[i], mailto[i], hidden)
+                    daka(user[i], pw[i], mailto[i], hidden, executable_path)
                 if email == 0:
-                    daka(user[i], pw[i], 0, hidden)
+                    daka(user[i], pw[i], 0, hidden, executable_path)
             except:
                 msgbox.showerror("错误", "可能是因为config.txt内密码/邮箱数组越界，请检查config.txt")
                 #  win32api.MessageBox(0, "可能是因为config.txt内密码/邮箱数组越界，请检查config.txt", "错误", win32con.MB_ICONWARNING)

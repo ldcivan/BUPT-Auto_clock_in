@@ -1,5 +1,6 @@
-username:"XXXXXXXXXX"
-pw:"XXXXXXXX"
-mailto:"XXXX@XX.com"
+username:"XXXXXXXX,XXXXXXXX"
+pw:"12345678,12345678"
+mailto:"XXXXXXXXX@qq.com"
 hidden:1
 email:1
+firefox_path:""
