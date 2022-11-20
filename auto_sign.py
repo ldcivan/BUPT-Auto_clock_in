@@ -114,8 +114,12 @@ def daka(user, pw, mailto, hidden):
 
 
 
+root0 = tk.Tk()
+msgbox.showinfo("BUPT自动防疫打卡","程序已开始运行，具体运行日志请参考log.txt")
+root0.destroy()
 #  判断是否展示条约
 if not os.path.isfile("./readed"):
+    root1 = tk.Tk()
     #  rule = win32api.MessageBox(0, "使用本程序带来的后果，YujioNako与Pro-Ivan概不负责，如不同意该条件请勿使用本程序！", "声明", win32con.MB_YESNO)
     rule = msgbox.askyesno("声明", "使用本程序带来的后果，YujioNako与Pro-Ivan概不负责，如不同意该条件请勿使用本程序！\n是否同意该规则？")
     if rule == 0:
@@ -124,6 +128,7 @@ if not os.path.isfile("./readed"):
         file = open("./readed", 'w', encoding="utf-8")
         file.write("本文档的存在意味着您接受我们的条约，即使用本程序带来的后果，YujioNako与Pro-Ivan概不负责。敬请知悉。")
         file.close()
+    root1.destroy()
 
 
 with open("./geckodriver.log", 'w') as file:
@@ -136,7 +141,7 @@ print("正在读取config.txt")
 
 if not os.path.isfile("./config.txt"):  #  config初始设置GUI
     #  print("初次使用吗？是的话请告诉我们您的BUPT账号和密码吧！")
-    root0 = tk.Tk()
+    root2 = tk.Tk()
     first_time = msgbox.askyesno("欢迎使用", "欢迎使用由YujioNako编写的BUPT自动打卡程序！您似乎是第一次使用本程序，需要钰中帮您配置账密吗？或者您也可以选“否”，然后根据我们提供的config_default.txt自行配置后将文件名改为config.txt")
     if first_time == 0:
         default_config()
@@ -156,7 +161,10 @@ if not os.path.isfile("./config.txt"):  #  config初始设置GUI
         msgbox.showinfo("config已设置", "基本设置录入成功！更多设置请自行查看config.txt")
         print("基本设置录入成功！更多设置请自行查看config.txt")
         root.destroy()
-        root0.destroy()
+        try:
+            root2.destroy()
+        except:
+            return
 
     b3 = tk.Label(root, text="学号：")
     b3.pack()
@@ -168,6 +176,8 @@ if not os.path.isfile("./config.txt"):  #  config初始设置GUI
     b1.pack()
     b2 = tk.Button(root, text='确 认', command=input2config)
     b2.pack()
+    b5 = tk.Label(root, text="注：您可以英文“,”分隔以输入多组账密")
+    b5.pack()
     root.mainloop()
 
 try:
